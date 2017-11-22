@@ -29,6 +29,8 @@ const float TEXT_HEIGHT = 14;
 // strong reference needed for UIAccessibilityContainer
 // see http://stackoverflow.com/questions/13462046/custom-uiview-not-showing-accessibility-on-voice-over
 @property (nonatomic, strong) NSMutableArray *accessibleElements;
+
+@property (nonatomic, strong) NSMutableArray *stepsArray;
 @end
 
 /**
@@ -43,7 +45,7 @@ const float TEXT_HEIGHT = 14;
 @interface TTRangeSliderRightElement : UIAccessibilityElement
 @end
 
-static const CGFloat kLabelsFontSize = 12.0f;
+static const CGFloat kLabelsFontSize = 14.0f;
 
 @implementation TTRangeSlider
 
@@ -150,6 +152,8 @@ static const CGFloat kLabelsFontSize = 12.0f;
     if (!self.maxLabelAccessibilityHint || self.maxLabelAccessibilityHint.length == 0) {
       self.maxLabelAccessibilityHint = @"Maximum value in slider";
     }
+ 
+     _stepsArray = [NSMutableArray new];
   
     [self refresh];
 }
@@ -170,6 +174,30 @@ static const CGFloat kLabelsFontSize = 12.0f;
     [self updateLabelValues];
     [self updateHandlePositions];
     [self updateLabelPositions];
+ 
+    NSInteger stepsValue = (self.maxValue - self.minValue)/self.step + 1;
+    
+    if(_stepsArray.count != stepsValue) {
+        for(UIView *stepView in _stepsArray) {
+            [stepView removeFromSuperview];
+        }
+        _stepsArray = [NSMutableArray new];
+        
+        for(NSInteger i = 0; i<stepsValue; i++) {
+            UIView *stepView = [[UIView alloc] init];
+            stepView.backgroundColor = self.tintColor;
+            [_stepsArray addObject:stepView];
+            [self addSubview:stepView];
+        }
+    }
+    
+    
+    for(NSInteger i = 0; i<_stepsArray.count; i++) {
+        UIView *stepView = _stepsArray[i];
+        
+        CGFloat x = i*(self.sliderLine.frame.size.width)/(_stepsArray.count-1);
+        stepView.frame = CGRectMake(x+self.sliderLine.frame.origin.x, self.sliderLine.frame.origin.y-4, 1, 11);
+    }
 }
 
 - (id)initWithCoder:(NSCoder *)aCoder
