@@ -453,6 +453,9 @@ static const CGFloat kLabelsFontSize = 14.0f;
     //find out the percentage along the line we are in x coordinate terms (subtracting half the frames width to account for moving the middle of the handle, not the left hand side)
     float percentage = ((location.x-CGRectGetMinX(self.sliderLine.frame)) - self.handleDiameter/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
 
+    if (percentage < 0) {
+     return YES;
+    }
     //multiply that percentage by self.maxValue to get the new selected minimum value
     float selectedValue = percentage * (self.maxValue - self.minValue) + self.minValue;
 
