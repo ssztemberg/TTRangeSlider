@@ -26,6 +26,11 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable float maxValue;
 
 /**
+ * The offset value to select in the range
+ */
+@property (nonatomic, assign) IBInspectable float offset;
+
+/**
  * The preselected minumum value
  * (note: This should be less than the selectedMaximum)
  */
